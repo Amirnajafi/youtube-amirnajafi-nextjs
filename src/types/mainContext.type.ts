@@ -1,5 +1,7 @@
 export interface IContextReturnType {
   user: any;
+  isLoggedIn: boolean;
+  updateUserInfo: () => void;
 }
 
 export interface IMainContextProps {
@@ -7,5 +9,5 @@ export interface IMainContextProps {
 }
 
 export interface IMainContextState {
-  user: IUser | undefined;
+  user: any | undefined;
 }

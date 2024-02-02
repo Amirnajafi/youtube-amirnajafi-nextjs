@@ -1,3 +1,5 @@
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import React from 'react';
 
 interface IMainLayoutProps {
@@ -5,16 +7,14 @@ interface IMainLayoutProps {
 }
 
 const MainLayout = (props: IMainLayoutProps) => {
-  const {
-    children,
-  } = props;
+  const {children} = props;
 
   return (
-    <>
-      <header>Header</header>
-      <main>{children}</main>
-      <footer>Footer</footer>
-    </>
+    <div className="flex flex-col flex-1 h-[100vh]">
+      <Header />
+      <main className="flex-col flex-1">{children}</main>
+      <Footer />
+    </div>
   );
 };
 export default MainLayout;
