@@ -1,5 +1,6 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {PrismaClient} from '@prisma/client';
+import {getUserID} from '@/helper/authentication';
 const prisma = new PrismaClient();
 
 export default async function usersServices(
@@ -31,12 +32,13 @@ export default async function usersServices(
     res.json({error: 'Bad request'});
   }
   if (req.method === 'POST') {
-    const {title, content, authorId, published} = req.body;
+    const {title, content, published} = req.body;
+    const userId = await getUserID(req.cookies.token);
     const post = await prisma.post.create({
       data: {
         title,
         content,
-        authorId,
+        authorId: userId as number,
         published,
       },
     });

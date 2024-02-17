@@ -4,6 +4,7 @@ import {PrismaClient} from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {NextResponse} from 'next/server';
+import {encodeToken} from '@/helper/authentication';
 
 const prisma = new PrismaClient();
 
@@ -32,12 +33,7 @@ export default async function usersServices(
     const valid = await bcrypt.compare(data.password, user.password);
     if (!valid) return res.status(400).json({message: 'password not valid'});
 
-    const tokenData = {
-      id: user.id,
-    };
-    const token = await jwt.sign(tokenData, 'my secret', {
-      expiresIn: '1d',
-    });
+    const token = await encodeToken(user.id);
     res.setHeader('Set-Cookie', `token=${token}; HttpOnly; Path=/`);
     return res.status(200).json({message: 'user logged in successfully'});
   } catch (error) {

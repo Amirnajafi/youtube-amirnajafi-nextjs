@@ -1,7 +1,13 @@
 import React, {Fragment} from 'react';
 import {Disclosure, Menu, Transition} from '@headlessui/react';
-import {Bars3Icon, BellIcon, XMarkIcon} from '@heroicons/react/24/outline';
+import {
+  Bars3Icon,
+  BellIcon,
+  PlusIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import {Context} from '@/providers/MainContext';
+import Link from 'next/link';
 
 const navigation = [
   {name: 'Dashboard', href: '#', current: true},
@@ -15,7 +21,7 @@ function classNames(...classes: any) {
 }
 
 export default function Header() {
-  const {isLoggedIn} = React.useContext(Context);
+  const {isLoggedIn, handleLogout} = React.useContext(Context);
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -63,8 +69,17 @@ export default function Header() {
                   </div>
                 </div>
               </div>
-              {isLoggedIn && (
+              {isLoggedIn ? (
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                  <Link
+                    href={'/users/posts/add'}
+                    type="button"
+                    className="relative mr-4 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  >
+                    <span className="absolute -inset-1.5" />
+                    <span className="sr-only">Add new Post</span>
+                    <PlusIcon className="h-6 w-6" aria-hidden="true" />
+                  </Link>
                   <button
                     type="button"
                     className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -126,7 +141,8 @@ export default function Header() {
                         <Menu.Item>
                           {({active}) => (
                             <a
-                              href="/api/auth/logout"
+                              onClick={handleLogout}
+                              href="#"
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
@@ -139,6 +155,18 @@ export default function Header() {
                       </Menu.Items>
                     </Transition>
                   </Menu>
+                </div>
+              ) : (
+                <div>
+                  <a
+                    href={'/auth/login'}
+                    className={classNames(
+                      'text-gray-300 hover:bg-gray-700 hover:text-white',
+                      'rounded-md px-3 py-2 text-sm font-medium'
+                    )}
+                  >
+                    Sign In
+                  </a>
                 </div>
               )}
             </div>

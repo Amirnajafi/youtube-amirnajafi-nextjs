@@ -6,12 +6,15 @@ import {
   IMainContextState,
 } from '@/types/mainContext.type';
 import {getUserInfo} from '@/services/user';
+import {logout} from '@/services/auth';
+import {useRouter} from 'next/router';
 
 export const Context = createContext<IContextReturnType>(
   {} as IContextReturnType
 );
 
 const MainContext = (props: IMainContextProps) => {
+  const router = useRouter();
   const {children} = props;
   const [state, setState] = React.useState<IMainContextState>({
     user: undefined,
@@ -31,6 +34,14 @@ const MainContext = (props: IMainContextProps) => {
         console.error(e);
       });
   };
+
+  const handleLogout = () => {
+    logout().then(() => {
+      router.push('/');
+      setState((prevState) => ({...prevState, user: undefined}));
+    });
+  };
+
   const isLoggedIn = useMemo(() => {
     return !!state.user;
   }, [state.user]);
@@ -41,6 +52,7 @@ const MainContext = (props: IMainContextProps) => {
         ...state,
         isLoggedIn,
         updateUserInfo,
+        handleLogout,
       }}
     >
       {children}

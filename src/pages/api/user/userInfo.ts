@@ -1,6 +1,7 @@
 import {PrismaClient} from '@prisma/client';
 import type {NextApiRequest, NextApiResponse} from 'next';
 import jwt from 'jsonwebtoken';
+import {decodeToken} from '@/helper/authentication';
 
 const prisma = new PrismaClient();
 
@@ -17,7 +18,7 @@ export default async function usersServices(
     if (!token)
       return res.status(401).json({message: 'Authorization required'});
 
-    const decodedToken: any = jwt.verify(token, 'my secret');
+    const decodedToken = await decodeToken(token);
     if (!decodedToken)
       return res.status(401).json({message: 'Authorization required'});
 

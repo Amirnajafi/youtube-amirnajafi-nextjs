@@ -2,6 +2,7 @@ export interface IContextReturnType {
   user: any;
   isLoggedIn: boolean;
   updateUserInfo: () => void;
+  handleLogout: () => void;
 }
 
 export interface IMainContextProps {
