@@ -8,28 +8,25 @@ export default async function usersServices(
   res: NextApiResponse
 ) {
   if (req.method === 'GET') {
-    const {id} = req.query;
-    if (id) {
-      console.log(id);
-      const post = await prisma.post.findFirst({
-        where: {
-          id: Number(id),
-        },
-      });
-      if (!post) {
-        return res.json({error: 'Not found'});
-      }
-      res.json(post);
-    } else {
+    try {
+      console.log('GET request come to /posts');
       const posts = await prisma.post.findMany({
         where: {
           published: true,
         },
+        include: {
+          author: {
+            select: {
+              name: true,
+              id: true,
+            },
+          },
+        },
       });
       res.json(posts);
+    } catch (e) {
+      console.log(e);
     }
-    res.statusCode = 400;
-    res.json({error: 'Bad request'});
   }
   if (req.method === 'POST') {
     const {title, content, published} = req.body;

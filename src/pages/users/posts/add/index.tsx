@@ -1,10 +1,10 @@
 import MainLayout from '@/layouts/MainLayout';
 import {ReactElement, useContext, useState} from 'react';
-import {NextPageWithLayout} from '../_app';
 import {register} from '@/services/auth';
 import {toast} from 'react-toastify';
 import {useRouter} from 'next/router';
 import {addPost} from '@/services/posts';
+import {NextPageWithLayout} from '@/pages/_app';
 
 const AddPosts: NextPageWithLayout<{}> = () => {
   const router = useRouter();

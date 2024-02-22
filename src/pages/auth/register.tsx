@@ -29,7 +29,6 @@ const Register: NextPageWithLayout<{}> = () => {
         toast.error(e.response.data.message);
       });
   };
-  console.log(form);
 
   return (
     <>
