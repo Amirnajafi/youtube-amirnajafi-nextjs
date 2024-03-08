@@ -39,6 +39,7 @@ export default async function usersServices(
         published,
       },
     });
+    res.revalidate('/');
     return res.json(post);
   }
   if (req.method === 'PUT') {
