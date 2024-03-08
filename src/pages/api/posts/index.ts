@@ -8,6 +8,7 @@ export default async function usersServices(
   res: NextApiResponse
 ) {
   if (req.method === 'GET') {
+    const {locale} = req.query;
     try {
       console.log('GET request come to /posts');
       const posts = await prisma.post.findMany({
@@ -23,6 +24,12 @@ export default async function usersServices(
           },
         },
       });
+      if ((locale as String) === 'fa') {
+        posts.forEach((post) => {
+          post.content = post.content_fa;
+          post.title = post.title_fa;
+        });
+      }
       res.json(posts);
     } catch (e) {
       console.log(e);

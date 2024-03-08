@@ -8,13 +8,8 @@ import {
 } from '@heroicons/react/24/outline';
 import {Context} from '@/providers/MainContext';
 import Link from 'next/link';
-
-const navigation = [
-  {name: 'Dashboard', href: '#', current: true},
-  {name: 'Team', href: '#', current: false},
-  {name: 'Projects', href: '#', current: false},
-  {name: 'Calendar', href: '#', current: false},
-];
+import {useRouter} from 'next/router';
+import {useTranslation} from 'next-i18next';
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ');
@@ -22,7 +17,25 @@ function classNames(...classes: any) {
 
 export default function Header() {
   const {isLoggedIn, handleLogout} = React.useContext(Context);
+  const router = useRouter();
+  const {locale} = router;
+  const {t} = useTranslation();
 
+  const navigation = [
+    {name: t('dashboard'), href: '#', current: true},
+    {name: t('team'), href: '#', current: false},
+    {name: t('projects'), href: '#', current: false},
+    {name: t('calendar'), href: '#', current: false},
+  ];
+
+  const handleChangeLanguage = () => {
+    const newLocale = locale === 'en' ? 'fa' : 'en';
+    const html: HTMLElement | null = document.getElementById('html');
+    if (html) {
+      html.setAttribute('dir', newLocale === 'en' ? 'ltr' : 'rtl');
+    }
+    router.push(router.asPath, router.asPath, {locale: newLocale});
+  };
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({open}) => (
@@ -71,6 +84,13 @@ export default function Header() {
               </div>
               {isLoggedIn ? (
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                  <button
+                    onClick={handleChangeLanguage}
+                    type="button"
+                    className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  >
+                    {locale === 'en' ? 'فارسی' : 'English'}
+                  </button>
                   <Link
                     href={'/users/posts/add'}
                     type="button"

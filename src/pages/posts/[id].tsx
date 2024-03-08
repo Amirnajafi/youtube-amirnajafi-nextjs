@@ -3,6 +3,7 @@ import {NextPageWithLayout} from '@/pages/_app';
 import {getPost, getPosts} from '@/services/posts';
 import {HeartIcon, ShareIcon} from '@heroicons/react/24/outline';
 import {PrismaClient} from '@prisma/client';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import {ReactElement} from 'react';
 
@@ -72,43 +73,49 @@ PostPage.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;
 };
 
-export const getServerSideProps = async (context: any) => {
-  const prisma = new PrismaClient();
-  const id = context.params.id;
-  if (id) {
-    const post = await prisma.post.findFirst({
-      where: {
-        id: Number(id),
-      },
-      include: {
-        author: {
-          select: {
-            name: true,
-            id: true,
-          },
-        },
-      },
-    });
-    console.log(post);
-    if (!post) {
-      return {
-        notFound: true,
-      };
-    }
-    return {props: {post: JSON.parse(JSON.stringify(post))}};
-  } else {
-    return {
-      notFound: true,
-    };
-  }
-};
-
 // export const getServerSideProps = async (context: any) => {
+//   const prisma = new PrismaClient();
 //   const id = context.params.id;
-//   const res = await getPost(id);
-//   // Pass data to  page via props
-//   return {props: {post: res.data}};
+//   if (id) {
+//     const post = await prisma.post.findFirst({
+//       where: {
+//         id: Number(id),
+//       },
+//       include: {
+//         author: {
+//           select: {
+//             name: true,
+//             id: true,
+//           },
+//         },
+//       },
+//     });
+//     console.log(post);
+//     if (!post) {
+//       return {
+//         notFound: true,
+//       };
+//     }
+//     return {props: {post: JSON.parse(JSON.stringify(post))}};
+//   } else {
+//     return {
+//       notFound: true,
+//     };
+//   }
 // };
+
+export const getServerSideProps = async (context: any) => {
+  const {locale} = context;
+  const id = context.params.id;
+  const res = await getPost(id, locale);
+  // Pass data to  page via props
+  return {
+    props: {
+      ...(await serverSideTranslations(locale)),
+      post: res.data,
+    },
+  };
+};
 
 // export const getStaticProps = async (context: any) => {
 //   const id = context.params.id;

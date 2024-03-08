@@ -9,7 +9,7 @@ export default async function usersServices(
 ) {
   if (req.method === 'GET') {
     console.log('GET request come to /posts/id');
-    const {id} = req.query;
+    const {id, locale} = req.query;
     if (id) {
       const post = await prisma.post.findFirst({
         where: {
@@ -26,6 +26,10 @@ export default async function usersServices(
       });
       if (!post) {
         return res.json({error: 'Not found'});
+      }
+      if ((locale as String) === 'fa') {
+        post.content = post.content_fa;
+        post.title = post.title_fa;
       }
       res.json(post);
     }

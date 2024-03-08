@@ -3,6 +3,8 @@ import {getPosts} from '@/services/posts';
 import {HeartIcon, ShareIcon} from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import {NextPageWithLayout} from './_app';
+import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+
 const Home: NextPageWithLayout<{posts: []}> = ({posts}) => {
   // const [posts, setPosts] = useState([]);
   // const [isLoading, setIsLoading] = useState(true);
@@ -94,9 +96,13 @@ Home.getLayout = function getLayout(page: any) {
 // }) satisfies GetServerSideProps<{posts: []}>;
 
 export const getStaticProps = async (context: any) => {
-  const res = await getPosts();
+  const {locale} = context;
+  const res = await getPosts(locale);
   return {
-    props: {posts: res.data},
+    props: {
+      ...(await serverSideTranslations(locale)),
+      posts: res.data,
+    },
   };
 };
 
